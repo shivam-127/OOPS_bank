@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .accounts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .account-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .account-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .account-header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .account-name {
+            font-size: 1.4rem;
+            color: #333;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .account-id {
+            font-size: 0.85rem;
+            color: #999;
+            margin-top: 5px;
+            margin: 8px 0 0 0;
+        }
+
+        .balance-display {
+            font-size: 2.2rem;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 18px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .action-group {
+            margin: 18px 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .action-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        input[type="number"],
+        input[type="password"] {
+            flex: 1;
+            padding: 11px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease;
+            height: 42px;
+        }
+
+        input[type="number"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-deposit {
+            background: #27ae60;
+        }
+
+        .btn-deposit:hover {
+            background: #229954;
+        }
+
+        .btn-withdraw {
+            background: #e74c3c;
+        }
+
+        .btn-withdraw:hover {
+            background: #c0392b;
+        }
+
+        .btn-pin {
+            background: #f39c12;
+        }
+
+        .btn-pin:hover {
+            background: #d68910;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 0.88rem;
+            display: none;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: flex;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: flex;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: flex;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 1024px) {
+            .accounts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .accounts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            body {
+                align-items: flex-start;
+                padding-top: 30px;
+            }
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background: #5568d3;
+            transform: scale(1.05);
+        }
+
+        .status-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.1);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            display: none;
+        }
+
+        .status-bar.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar" id="statusBar"></div>
+    <div class="container">
+        <h1>🏦 Banking System</h1>
+        <div id="accountsContainer" class="accounts-grid"></div>
+        <button class="refresh-btn" onclick="loadAccounts()">Refresh</button>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api/accounts';
+
+        async function loadAccounts() {
+            try {
+                showStatus('Loading accounts...', 'info');
+                const response = await fetch(API_URL);
+                const accounts = await response.json();
+                
+                renderAccounts(accounts);
+                showStatus('Accounts loaded successfully!', 'success');
+            } catch (error) {
+                console.error('Error loading accounts:', error);
+                showStatus('Error loading accounts. Make sure backend is running on http://localhost:8080', 'error');
+            }
+        }
+
+        function renderAccounts(accounts) {
+            const container = document.getElementById('accountsContainer');
+            container.innerHTML = '';
+
+            accounts.forEach(account => {
+                const card = document.createElement('div');
+                card.className = 'account-card';
+                card.innerHTML = `
+                    <div class="account-header">
+                        <div class="account-name">${account.accountName}</div>
+                        <div class="account-id">ID: ${account.id} | PIN: ${account.pin}</div>
+                    </div>
+
+                    <div class="balance-display">$${account.balance.toFixed(2)}</div>
+
+                    <!-- Deposit Section -->
+                    <div class="action-group">
+                        <div class="action-title">Deposit Money</div>
+                        <div class="input-group">
+                            <input type="number" id="depositAmount_${account.id}" placeholder="Amount" min="0" step="0.01">
+                            <button class="btn-deposit" onclick="deposit(${account.id})">Deposit</button>
+                        </div>
+                        <div id="depositMsg_${account.id}" class="message"></div>
+                    </div>
+
+                    <!-- Withdraw Section -->
+                    <div class="action-group">
+                        <div class="action-title">Withdraw Money</div>
+                        <div class="input-group">
+                            <input type="number" id="withdrawAmount_${account.id}" placeholder="Amount" min="0" step="0.01">
+                            <input type="password" id="withdrawPin_${account.id}" placeholder="PIN" maxlength="4">
+                        </div>
+                        <button class="btn-withdraw" style="width: 100%;" onclick="withdraw(${account.id})">Withdraw</button>
+                        <div id="withdrawMsg_${account.id}" class="message"></div>
+                    </div>
+
+                    <!-- Change PIN Section -->
+                    <div class="action-group">
+                        <div class="action-title">Change PIN</div>
+                        <div class="input-group">
+                            <input type="password" id="oldPin_${account.id}" placeholder="Old PIN" maxlength="4">
+                            <input type="password" id="newPin_${account.id}" placeholder="New PIN" maxlength="4">
+                        </div>
+                        <button class="btn-pin" style="width: 100%;" onclick="changePin(${account.id})">Change PIN</button>
+                        <div id="pinMsg_${account.id}" class="message"></div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function deposit(accountId) {
+            const amount = document.getElementById(`depositAmount_${accountId}`).value;
+            const msgDiv = document.getElementById(`depositMsg_${accountId}`);
+
+            if (!amount || amount <= 0) {
+                showMessage(msgDiv, 'Please enter a valid amount', 'error');
+                return;
+            }
+
+            try {
+                msgDiv.innerHTML = '<span class="loading"></span> Processing...';
+                msgDiv.className = 'message info';
+                msgDiv.style.display = 'block';
+
+                const response = await fetch(`${API_URL}/${accountId}/deposit`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: parseFloat(amount) })
+                });
+
+                if (response.ok) {
+                    const updated = await response.json();
+                    showMessage(msgDiv, `✓ Deposited $${amount}. New Balance: $${updated.balance.toFixed(2)}`, 'success');
+                    document.getElementById(`depositAmount_${accountId}`).value = '';
+                    loadAccounts();
+                } else {
+                    const error = await response.json();
+                    showMessage(msgDiv, error.error || 'Deposit failed', 'error');
+                }
+            } catch (error) {
+                showMessage(msgDiv, 'Error: ' + error.message, 'error');
+            }
+        }
+
+        async function withdraw(accountId) {
+            const amount = document.getElementById(`withdrawAmount_${accountId}`).value;
+            const pin = document.getElementById(`withdrawPin_${accountId}`).value;
+            const msgDiv = document.getElementById(`withdrawMsg_${accountId}`);
+
+            if (!amount || amount <= 0 || !pin) {
+                showMessage(msgDiv, 'Please enter amount and PIN', 'error');
+                return;
+            }
+
+            try {
+                msgDiv.innerHTML = '<span class="loading"></span> Processing...';
+                msgDiv.className = 'message info';
+                msgDiv.style.display = 'block';
+
+                const response = await fetch(`${API_URL}/${accountId}/withdraw`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: parseFloat(amount), pin: parseInt(pin) })
+                });
+
+                if (response.ok) {
+                    const updated = await response.json();
+                    showMessage(msgDiv, `✓ Withdrawn $${amount}. New Balance: $${updated.balance.toFixed(2)}`, 'success');
+                    document.getElementById(`withdrawAmount_${accountId}`).value = '';
+                    document.getElementById(`withdrawPin_${accountId}`).value = '';
+                    loadAccounts();
+                } else {
+                    const error = await response.json();
+                    showMessage(msgDiv, error.error || 'Withdrawal failed', 'error');
+                }
+            } catch (error) {
+                showMessage(msgDiv, 'Error: ' + error.message, 'error');
+            }
+        }
+
+        async function changePin(accountId) {
+            const oldPin = document.getElementById(`oldPin_${accountId}`).value;
+            const newPin = document.getElementById(`newPin_${accountId}`).value;
+            const msgDiv = document.getElementById(`pinMsg_${accountId}`);
+
+            if (!oldPin || !newPin) {
+                showMessage(msgDiv, 'Please enter old and new PIN', 'error');
+                return;
+            }
+
+            try {
+                msgDiv.innerHTML = '<span class="loading"></span> Processing...';
+                msgDiv.className = 'message info';
+                msgDiv.style.display = 'block';
+
+                const response = await fetch(`${API_URL}/${accountId}/change-pin`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ oldPin: parseInt(oldPin), newPin: parseInt(newPin) })
+                });
+
+                if (response.ok) {
+                    showMessage(msgDiv, `✓ PIN changed successfully to ${newPin}`, 'success');
+                    document.getElementById(`oldPin_${accountId}`).value = '';
+                    document.getElementById(`newPin_${accountId}`).value = '';
+                    loadAccounts();
+                } else {
+                    const error = await response.json();
+                    showMessage(msgDiv, error.error || 'PIN change failed', 'error');
+                }
+            } catch (error) {
+                showMessage(msgDiv, 'Error: ' + error.message, 'error');
+            }
+        }
+
+        function showMessage(element, message, type) {
+            element.innerHTML = message;
+            element.className = `message ${type}`;
+            element.style.display = 'block';
+        }
+
+        function showStatus(message, type) {
+            const statusBar = document.getElementById('statusBar');
+            statusBar.textContent = message;
+            statusBar.className = `status-bar active`;
+            statusBar.style.background = type === 'error' ? 'rgba(231, 76, 60, 0.8)' : 
+                                         type === 'success' ? 'rgba(39, 174, 96, 0.8)' : 
+                                         'rgba(0, 0, 0, 0.5)';
+            
+            if (type !== 'error') {
+                setTimeout(() => statusBar.className = 'status-bar', 3000);
+            }
+        }
+
+        // Load accounts on page load
+        window.addEventListener('load', loadAccounts);
+    </script>
+</body>
+</html>
