@@ -5,145 +5,211 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Banking System</title>
     <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-subtle: #f9fafb;
+            --border: #e5e7eb;
+            --white: #ffffff;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            flex-direction: column;
+            padding: 40px 20px;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             width: 100%;
+            margin: 0 auto;
+            flex: 1;
         }
 
         h1 {
             text-align: center;
-            color: white;
-            margin-bottom: 40px;
-            font-size: 2.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: var(--text-dark);
+            margin-bottom: 50px;
+            font-size: 2.8rem;
+            font-weight: 300;
+            letter-spacing: -1px;
+            text-shadow: none;
+        }
+
+        h1 span {
+            font-weight: 700;
+            color: var(--primary);
         }
 
         .accounts-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 32px;
+            width: 100%;
+            margin: 0 auto;
         }
 
         .account-card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            height: 100%;
+            background: var(--white);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
+            border: 1px solid var(--border);
+            min-width: 0;
         }
 
         .account-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+            transform: translateY(-4px);
         }
 
         .account-header {
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 20px;
         }
 
         .account-name {
-            font-size: 1.4rem;
-            color: #333;
-            font-weight: bold;
+            font-size: 1.25rem;
+            color: var(--text-dark);
+            font-weight: 600;
             margin: 0;
+            letter-spacing: -0.3px;
         }
 
         .account-id {
-            font-size: 0.85rem;
-            color: #999;
-            margin-top: 5px;
-            margin: 8px 0 0 0;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 8px;
+            font-weight: 500;
         }
 
         .balance-display {
-            font-size: 2.2rem;
-            color: #667eea;
-            font-weight: bold;
-            margin: 20px 0;
-            padding: 18px;
-            background: #f0f0f0;
-            border-radius: 8px;
+            font-size: 2.5rem;
+            color: var(--primary);
+            font-weight: 700;
+            margin: 28px 0;
+            padding: 24px;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border-radius: 12px;
             text-align: center;
+            border: 1px solid rgba(79, 70, 229, 0.1);
+            letter-spacing: -0.5px;
+        }
+
+        .balance-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
         }
 
         .action-group {
-            margin: 18px 0;
-            flex: 1;
+            margin: 20px 0;
             display: flex;
             flex-direction: column;
+            gap: 12px;
+            flex: 1;
         }
 
         .action-title {
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-            margin-top: 0;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            opacity: 0.7;
         }
 
         .input-group {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 10px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+        }
+
+        .input-group.with-button {
+            grid-template-columns: 1fr auto;
         }
 
         input[type="number"],
         input[type="password"] {
-            flex: 1;
-            padding: 11px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
+            padding: 12px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
             font-size: 0.95rem;
-            transition: border-color 0.3s ease;
-            height: 42px;
+            transition: all 0.2s ease;
+            background: var(--bg-subtle);
+            color: var(--text-dark);
+            width: 100%;
+            font-weight: 500;
+            min-height: 40px;
+        }
+
+        input[type="number"]::placeholder,
+        input[type="password"]::placeholder {
+            color: var(--text-light);
+            font-weight: 500;
         }
 
         input[type="number"]:focus,
         input[type="password"]:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--primary);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
         button {
             padding: 12px 16px;
-            background: #667eea;
-            color: white;
+            background: var(--primary);
+            color: var(--white);
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
             font-size: 0.9rem;
-            transition: background 0.3s ease;
-            height: 42px;
+            transition: all 0.2s ease;
+            min-height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            font-size: 0.8rem;
+            flex-shrink: 0;
         }
 
         button:hover {
-            background: #5568d3;
+            background: var(--primary-dark);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
 
         button:active {
@@ -151,70 +217,75 @@
         }
 
         .btn-deposit {
-            background: #27ae60;
+            background: var(--secondary);
         }
 
         .btn-deposit:hover {
-            background: #229954;
+            background: #059669;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
         .btn-withdraw {
-            background: #e74c3c;
+            background: var(--danger);
         }
 
         .btn-withdraw:hover {
-            background: #c0392b;
+            background: #dc2626;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
         .btn-pin {
-            background: #f39c12;
+            background: var(--warning);
         }
 
         .btn-pin:hover {
-            background: #d68910;
+            background: #d97706;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
         }
 
         .message {
-            padding: 12px;
-            border-radius: 6px;
+            padding: 12px 14px;
+            border-radius: 8px;
             margin-top: 10px;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             display: none;
-            min-height: 40px;
-            display: flex;
+            min-height: 36px;
             align-items: center;
+            gap: 10px;
+            border-left: 4px solid transparent;
+            font-weight: 500;
         }
 
         .message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: #dcfce7;
+            color: #166534;
+            border-left-color: var(--secondary);
             display: flex;
         }
 
         .message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: #fee2e2;
+            color: #991b1b;
+            border-left-color: var(--danger);
             display: flex;
         }
 
         .message.info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
+            background: #dbeafe;
+            color: #1e40af;
+            border-left-color: #3b82f6;
             display: flex;
         }
 
         .loading {
             display: inline-block;
-            width: 12px;
-            height: 12px;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #667eea;
+            width: 14px;
+            height: 14px;
+            border: 2.5px solid rgba(0, 0, 0, 0.1);
+            border-top-color: currentColor;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 8px;
+            animation: spin 0.8s linear infinite;
+            flex-shrink: 0;
         }
 
         @keyframes spin {
@@ -222,38 +293,108 @@
             100% { transform: rotate(360deg); }
         }
 
-        .two-col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
         @media (max-width: 1024px) {
             .accounts-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+                gap: 28px;
+            }
+
+            h1 {
+                font-size: 2.4rem;
             }
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 16px;
+            }
+
             h1 {
-                font-size: 1.8rem;
+                font-size: 2rem;
+                margin-bottom: 40px;
             }
 
             .accounts-grid {
                 grid-template-columns: 1fr;
+                gap: 24px;
             }
 
-            .two-col {
+            .account-card {
+                padding: 28px;
+            }
+
+            .balance-display {
+                font-size: 2.2rem;
+                padding: 20px;
+            }
+
+            .account-name {
+                font-size: 1.15rem;
+            }
+
+            input[type="number"],
+            input[type="password"],
+            button {
+                font-size: 0.9rem;
+            }
+
+            .input-group.with-button {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 20px 12px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+                margin-bottom: 30px;
+            }
+
+            .account-card {
+                padding: 20px;
+                border-radius: 12px;
+            }
+
+            .account-name {
+                font-size: 1rem;
+            }
+
+            .account-id {
+                font-size: 0.75rem;
+            }
+
+            .balance-display {
+                font-size: 1.8rem;
+                padding: 16px;
+                margin: 20px 0;
+            }
+
+            .balance-label {
+                font-size: 0.75rem;
+            }
+
+            .action-title {
+                font-size: 0.7rem;
+            }
+
+            input[type="number"],
+            input[type="password"],
+            button {
+                font-size: 0.85rem;
+                min-height: 36px;
+                padding: 10px 12px;
+            }
+
+            .action-group {
+                margin: 16px 0;
+                gap: 10px;
             }
 
             .input-group {
-                flex-direction: column;
-            }
-
-            body {
-                align-items: flex-start;
-                padding-top: 30px;
+                gap: 8px;
             }
         }
 
@@ -261,45 +402,87 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            padding: 15px 25px;
-            background: #667eea;
-            color: white;
+            padding: 14px 22px;
+            background: var(--primary);
+            color: var(--white);
             border: none;
-            border-radius: 50px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
             transition: all 0.3s ease;
+            z-index: 100;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .refresh-btn:hover {
-            background: #5568d3;
-            transform: scale(1.05);
+            background: var(--primary-dark);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
         }
 
         .status-bar {
             position: fixed;
             top: 0;
+            left: 0;
             width: 100%;
             background: rgba(0, 0, 0, 0.1);
-            color: white;
-            padding: 10px;
+            color: var(--white);
+            padding: 14px 20px;
             text-align: center;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
             display: none;
+            z-index: 200;
+            font-weight: 500;
+            font-size: 0.9rem;
         }
 
         .status-bar.active {
-            display: block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideDown {
+            from { 
+                opacity: 0;
+                transform: translateY(-100%); 
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0); 
+            }
+        }
+
+        @media (max-width: 480px) {
+            .refresh-btn {
+                padding: 12px 18px;
+                font-size: 0.8rem;
+                bottom: 20px;
+                right: 20px;
+                border-radius: 8px;
+            }
+
+            .status-bar {
+                padding: 12px 16px;
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="status-bar" id="statusBar"></div>
     <div class="container">
-        <h1>🏦 Banking System</h1>
+        <h1>🏦 <span>Banking</span> System</h1>
         <div id="accountsContainer" class="accounts-grid"></div>
-        <button class="refresh-btn" onclick="loadAccounts()">Refresh</button>
+        <button class="refresh-btn" onclick="loadAccounts()">↻ Refresh</button>
     </div>
 
     <script>
@@ -329,40 +512,45 @@
                 card.innerHTML = `
                     <div class="account-header">
                         <div class="account-name">${account.accountName}</div>
-                        <div class="account-id">ID: ${account.id} | PIN: ${account.pin}</div>
+                        <div class="account-id">Account ID: ${account.id} • PIN: ${account.pin}</div>
                     </div>
 
+                    <div class="balance-label">Current Balance</div>
                     <div class="balance-display">$${account.balance.toFixed(2)}</div>
 
                     <!-- Deposit Section -->
                     <div class="action-group">
-                        <div class="action-title">Deposit Money</div>
-                        <div class="input-group">
-                            <input type="number" id="depositAmount_${account.id}" placeholder="Amount" min="0" step="0.01">
-                            <button class="btn-deposit" onclick="deposit(${account.id})">Deposit</button>
+                        <div class="action-title">➕ Deposit</div>
+                        <div class="input-group with-button">
+                            <input type="number" id="depositAmount_${account.id}" placeholder="Enter amount" min="0" step="0.01">
+                            <button class="btn-deposit" onclick="deposit(${account.id})">Add</button>
                         </div>
                         <div id="depositMsg_${account.id}" class="message"></div>
                     </div>
 
                     <!-- Withdraw Section -->
                     <div class="action-group">
-                        <div class="action-title">Withdraw Money</div>
+                        <div class="action-title">➖ Withdraw</div>
                         <div class="input-group">
                             <input type="number" id="withdrawAmount_${account.id}" placeholder="Amount" min="0" step="0.01">
-                            <input type="password" id="withdrawPin_${account.id}" placeholder="PIN" maxlength="4">
                         </div>
-                        <button class="btn-withdraw" style="width: 100%;" onclick="withdraw(${account.id})">Withdraw</button>
+                        <div class="input-group">
+                            <input type="password" id="withdrawPin_${account.id}" placeholder="Enter PIN" maxlength="4">
+                        </div>
+                        <button class="btn-withdraw" onclick="withdraw(${account.id})" style="width: 100%;">Withdraw</button>
                         <div id="withdrawMsg_${account.id}" class="message"></div>
                     </div>
 
                     <!-- Change PIN Section -->
                     <div class="action-group">
-                        <div class="action-title">Change PIN</div>
+                        <div class="action-title">🔐 Change PIN</div>
                         <div class="input-group">
-                            <input type="password" id="oldPin_${account.id}" placeholder="Old PIN" maxlength="4">
+                            <input type="password" id="oldPin_${account.id}" placeholder="Current PIN" maxlength="4">
+                        </div>
+                        <div class="input-group">
                             <input type="password" id="newPin_${account.id}" placeholder="New PIN" maxlength="4">
                         </div>
-                        <button class="btn-pin" style="width: 100%;" onclick="changePin(${account.id})">Change PIN</button>
+                        <button class="btn-pin" onclick="changePin(${account.id})" style="width: 100%;">Update PIN</button>
                         <div id="pinMsg_${account.id}" class="message"></div>
                     </div>
                 `;
@@ -485,9 +673,14 @@
             const statusBar = document.getElementById('statusBar');
             statusBar.textContent = message;
             statusBar.className = `status-bar active`;
-            statusBar.style.background = type === 'error' ? 'rgba(231, 76, 60, 0.8)' : 
-                                         type === 'success' ? 'rgba(39, 174, 96, 0.8)' : 
-                                         'rgba(0, 0, 0, 0.5)';
+            
+            if (type === 'error') {
+                statusBar.style.background = 'rgba(231, 76, 60, 0.85)';
+            } else if (type === 'success') {
+                statusBar.style.background = 'rgba(46, 204, 113, 0.85)';
+            } else {
+                statusBar.style.background = 'rgba(52, 152, 219, 0.85)';
+            }
             
             if (type !== 'error') {
                 setTimeout(() => statusBar.className = 'status-bar', 3000);
